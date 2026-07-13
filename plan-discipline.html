@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>План Дисциплины и Роста</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#faf7f1; --card:#ffffff; --ink:#1c1c1e; --muted:#7c7c82; --line:#eae5d9;
+    --spirit:#1a9c56; --spirit-bg:#e7f6ee;
+    --intel:#2f6fed; --intel-bg:#eaf1ff;
+    --bodyc:#e8792b; --body-bg:#fdefe3;
+    --rec:#8b5cf6; --rec-bg:#f2edfd;
+    --gold:#c9a227;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',-apple-system,sans-serif;}
+  body{background:var(--bg);color:var(--ink);padding:14px;padding-bottom:50px;}
+  .wrap{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;}
+  .card-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;margin-bottom:14px;}
+  .card-title i{width:16px;height:16px;}
+
+  /* header */
+  .header{display:grid;grid-template-columns:1fr;gap:10px;}
+  .header-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;}
+  .htitle h1{font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:-.3px;line-height:1.15;}
+  .htitle p{font-size:11px;color:var(--spirit);font-weight:700;letter-spacing:1.5px;margin-top:4px;}
+  .hstats{display:flex;gap:8px;flex-wrap:wrap;}
+  .stat-box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;text-align:center;min-width:66px;}
+  .stat-box .l{font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:700;}
+  .stat-box .v{font-size:15px;font-weight:800;margin-top:2px;}
+  .goal-box{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;}
+  .goal-box i{width:20px;height:20px;color:var(--gold);flex-shrink:0;}
+  .goal-box .l{font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:700;}
+  .goal-box .v{font-size:11px;font-weight:600;line-height:1.3;}
+  .quote-box{background:#fbfaf6;border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:11px;font-style:italic;color:var(--muted);flex:1;min-width:180px;}
+
+  /* two-col goals */
+  .goals-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+  @media(min-width:640px){.goals-grid{grid-template-columns:1fr 1fr;}}
+  .goal-list{list-style:none;}
+  .goal-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #f2f0ea;font-size:13px;}
+  .goal-item:last-child{border-bottom:none;}
+  .gchk{width:18px;height:18px;border-radius:5px;border:1.5px solid #d3cfc2;flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .gchk.checked{background:var(--spirit);border-color:var(--spirit);}
+  .gchk .ck{font-size:11px;line-height:1;color:#fff;display:none;}
+  .gchk.checked .ck{display:block;}
+  .goal-item.done span{text-decoration:line-through;color:var(--muted);}
+
+  /* main grid: progress + big tracker */
+  .main-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+  @media(min-width:768px){.main-grid{grid-template-columns:250px 1fr;}}
+
+  .progress-block{display:flex;flex-direction:column;align-items:center;}
+  .circle-bar{position:relative;width:110px;height:110px;margin-bottom:14px;}
+  .circle-bar svg{width:110px;height:110px;transform:rotate(-90deg);}
+  .circle-bg{fill:none;stroke:#f2f0ea;stroke-width:8;}
+  .circle-fill{fill:none;stroke:var(--spirit);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset .3s;}
+  .circle-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .circle-text .pct{font-size:22px;font-weight:800;}
+  .circle-text .lbl{font-size:9px;color:var(--muted);text-transform:uppercase;}
+  .cat-stat-row{display:flex;align-items:center;gap:6px;width:100%;font-size:12px;font-weight:600;padding:6px 0;border-bottom:1px solid #f2f0ea;}
+  .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .cat-stat-row span:last-child{margin-left:auto;color:var(--muted);font-weight:700;}
+  .goal-note{margin-top:12px;font-size:10px;color:var(--muted);text-align:center;background:#f7f5ef;border-radius:8px;padding:8px;}
+
+  .table-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{width:100%;border-collapse:collapse;min-width:480px;}
+  th{font-size:11px;font-weight:700;color:var(--muted);padding:6px 4px;text-align:center;}
+  th:first-child{text-align:left;}
+  .cat-row-header td{padding:6px 8px;font-size:11px;font-weight:800;text-transform:uppercase;display:flex;align-items:center;gap:6px;}
+  .habit-row td{padding:7px 4px;border-bottom:1px solid #f2f0ea;font-size:12.5px;}
+  .habit-name{font-weight:600;color:#3a3a3c;}
+  .chk-cell{text-align:center;width:34px;}
+  .chk-btn{width:19px;height:19px;border-radius:50%;border:1.5px solid #c7c7cc;background:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
+  .chk-btn.checked{border-color:transparent;}
+  .chk-btn .ck{font-size:11px;line-height:1;color:#fff;display:none;}
+  .chk-btn.checked .ck{display:block;}
+
+  /* two card grid */
+  .two-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+  @media(min-width:900px){.two-grid{grid-template-columns:1fr 1fr;}}
+  .sub-table td, .sub-table th{padding:6px 4px;}
+  .sub-table .rowname{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;}
+  .rowname .time{display:block;font-size:9px;color:var(--muted);font-weight:500;}
+  .mini-icon{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;}
+  .num-input{width:44px;border:1px solid var(--line);border-radius:6px;padding:4px 2px;font-size:11px;text-align:center;background:#fbfaf6;}
+  .txt-input{width:56px;border:1px solid var(--line);border-radius:6px;padding:4px 2px;font-size:10px;text-align:center;background:#fbfaf6;}
+  .avg-col{color:var(--muted);font-weight:700;font-size:11px;}
+  .note-strip{margin-top:10px;font-size:11px;color:var(--muted);background:#f7f5ef;border-radius:8px;padding:8px 10px;}
+
+  /* reflection */
+  .refl-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+  @media(min-width:768px){.refl-grid{grid-template-columns:200px 1fr;}}
+  .refl-score-row{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:600;padding:6px 0;border-bottom:1px solid #f2f0ea;}
+  .refl-score-row input{width:38px;border:1px solid var(--line);border-radius:6px;padding:3px;text-align:center;font-size:11px;}
+  .refl-total{margin-top:10px;text-align:center;font-size:13px;font-weight:800;background:#f7f5ef;border-radius:8px;padding:8px;}
+  .refl-field label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px;margin-top:10px;}
+  .refl-field textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:12px;resize:vertical;min-height:34px;background:#fbfaf6;}
+
+  /* footer */
+  .footer{display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:center;padding:16px 8px;}
+  @media(min-width:640px){.footer{grid-template-columns:repeat(4,1fr);}}
+  .foot-item i{width:20px;height:20px;color:var(--spirit);margin-bottom:6px;}
+  .foot-item .t{font-size:11px;font-weight:800;text-transform:uppercase;}
+  .foot-item .s{font-size:10px;color:var(--muted);margin-top:2px;}
+  .tagline{text-align:center;font-size:10px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-top:6px;}
+
+  .status-line{text-align:center;font-size:10px;color:var(--muted);min-height:14px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="status-line" id="status-line">Загрузка...</div>
+
+  <!-- HEADER -->
+  <div class="card header">
+    <div class="header-top">
+      <div class="htitle">
+        <h1>План дисциплины<br>и роста</h1>
+        <p>ДУХ • УМ • ТЕЛО • ДЕЙСТВИЯ</p>
+      </div>
+      <div class="hstats">
+        <div class="stat-box"><div class="l">Рост</div><div class="v">181 см</div></div>
+        <div class="stat-box"><div class="l">Вес</div><div class="v">91–92 кг</div></div>
+      </div>
+    </div>
+    <div class="header-top">
+      <div class="goal-box">
+        🎯
+        <div><div class="l">Цель</div><div class="v">Рекомпозиция тела:<br>жиросжигание + тонус</div></div>
+      </div>
+      <div class="quote-box">«Дисциплина сегодня — свобода завтра.»</div>
+    </div>
+  </div>
+
+  <!-- GOALS -->
+  <div class="card">
+    <div class="card-title">🎯 Мои цели</div>
+    <div class="goals-grid">
+      <div>
+        <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">Цели на месяц</div>
+        <ul class="goal-list" id="goals-monthly"></ul>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">Цели на неделю</div>
+        <ul class="goal-list" id="goals-weekly"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN: PROGRESS + HABIT TRACKER -->
+  <div class="main-grid">
+    <div class="card progress-block">
+      <div class="card-title" style="align-self:flex-start;">📈 Прогресс недели</div>
+      <div class="circle-bar">
+        <svg><circle class="circle-bg" cx="55" cy="55" r="48"></circle>
+          <circle class="circle-fill" id="total-circle" cx="55" cy="55" r="48" stroke-dasharray="301.6" stroke-dashoffset="301.6"></circle></svg>
+        <div class="circle-text"><span class="pct" id="total-pct">0%</span><span class="lbl">выполнено</span></div>
+      </div>
+      <div style="width:100%;">
+        <div class="cat-stat-row"><span class="dot" style="background:var(--spirit);"></span><span>Духовность</span><span id="score-spirit">0/0</span></div>
+        <div class="cat-stat-row"><span class="dot" style="background:var(--intel);"></span><span>Интеллект</span><span id="score-intellect">0/0</span></div>
+        <div class="cat-stat-row"><span class="dot" style="background:var(--bodyc);"></span><span>Тело</span><span id="score-body">0/0</span></div>
+        <div class="cat-stat-row"><span class="dot" style="background:var(--rec);"></span><span>Восстановление</span><span id="score-recovery">0/0</span></div>
+      </div>
+      <div class="goal-note">Цель недели: ≥90% выполнения</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📅 Недельный трекер привычек</div>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Привычка</th><th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Вс</th></tr></thead>
+          <tbody id="tracker-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TWO SUB TRACKERS -->
+  <div class="two-grid">
+    <div class="card">
+      <div class="card-title">🌙 Трекер намазов и Корана</div>
+      <div class="table-wrapper">
+        <table class="sub-table">
+          <thead><tr><th style="text-align:left;"></th><th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Вс</th><th>Ср.знач.</th></tr></thead>
+          <tbody id="prayer-body"></tbody>
+        </table>
+      </div>
+      <div class="note-strip">○ Намаз &nbsp;&nbsp; 📖 Коран 10 мин &nbsp;&nbsp; отметь оба, чтобы день закрылся.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏋️ Трекер тела и питания</div>
+      <div class="table-wrapper">
+        <table class="sub-table">
+          <thead><tr><th style="text-align:left;"></th><th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Вс</th><th>Ср.знач.</th></tr></thead>
+          <tbody id="body-tracker-body"></tbody>
+        </table>
+      </div>
+      <div class="note-strip">Чистое питание: без сахара и мучного. Больше цельных продуктов, белка, овощей, полезных жиров и сложных углеводов.</div>
+    </div>
+  </div>
+
+  <!-- SLEEP -->
+  <div class="card">
+    <div class="card-title">🌙 Трекер сна</div>
+    <div class="table-wrapper">
+      <table class="sub-table">
+        <thead><tr><th style="text-align:left;"></th><th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Вс</th><th>Ср.знач.</th></tr></thead>
+        <tbody id="sleep-body"></tbody>
+      </table>
+    </div>
+    <div class="note-strip">Старайся ложиться до 23:00 и избегай экранов за 30–60 минут до сна.</div>
+  </div>
+
+  <!-- REFLECTION -->
+  <div class="card">
+    <div class="card-title">📋 Ежедневная рефлексия <span id="refl-date" style="margin-left:auto;font-weight:600;color:var(--muted);font-size:11px;text-transform:none;"></span></div>
+    <div class="refl-grid">
+      <div>
+        <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Оценка дня (1–10)</div>
+        <div class="refl-score-row"><span>💚 Духовность</span><input type="number" min="0" max="10" id="refl-spirit"></div>
+        <div class="refl-score-row"><span>🧠 Интеллект</span><input type="number" min="0" max="10" id="refl-intellect"></div>
+        <div class="refl-score-row"><span>💪 Тело</span><input type="number" min="0" max="10" id="refl-body"></div>
+        <div class="refl-score-row"><span>🌙 Восстановление</span><input type="number" min="0" max="10" id="refl-recovery"></div>
+        <div class="refl-total">Итог дня: <span id="refl-total">0</span>/40</div>
+      </div>
+      <div>
+        <div class="refl-field"><label>Что сделал лучше всего?</label><textarea id="refl-best" rows="2"></textarea></div>
+        <div class="refl-field"><label>Что можно улучшить завтра?</label><textarea id="refl-improve" rows="2"></textarea></div>
+        <div class="refl-field"><label>Главная задача на завтра</label><textarea id="refl-task" rows="1"></textarea></div>
+        <div class="refl-field"><label>За что я благодарен сегодня?</label><textarea id="refl-grateful" rows="1"></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="card footer">
+    <div class="foot-item">❤️<div class="t">Таухид в сердце</div><div class="s">Намерение ради Аллаха во всех делах</div></div>
+    <div class="foot-item">✅<div class="t">Дисциплина в действиях</div><div class="s">Маленькие шаги каждый день</div></div>
+    <div class="foot-item">⏳<div class="t">Терпение в пути</div><div class="s">Результат приходит со временем</div></div>
+    <div class="foot-item">✨<div class="t">Постоянное развитие</div><div class="s">Стремись быть лучше вчерашнего себя</div></div>
+  </div>
+  <div class="tagline">Фокус на сегодня. Доверие Аллаху. Действия каждый день.</div>
+
+</div>
+
+<script>
+const DAYS = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+
+const GOALS_MONTHLY = ['Понизить % жира и сохранить мышечную массу','Выстроить стабильный режим сна и питания','Прочитать минимум 6–8 книг/месяц','Укрепить духовность и связь с Аллахом','Стать сильнее умом и телом','Давать максимум в учёбе и работе'];
+const GOALS_WEEKLY = ['5 намазов вовремя (Фаджр и Иша в мечети)','Коран после каждого намаза (10 мин)','3 сессии математики (Пн/Ср/Пт)','3 занятия английским (Вт/Чт/Сб)','2 тренировки Full Body (Вт/Сб)','Белок 140–160 г каждый день','Без сахара и мучного 7 дней','Сон 7–8 часов суммарно каждый день'];
+
+const DATA_MAP = [
+  { cat:'Духовность', color:'var(--spirit)', bg:'var(--spirit-bg)', icon:'🕌', list:['Фаджр в мечети','Зухр вовремя','Аср вовремя','Магриб вовремя','Иша в мечети','Коран (10 мин)','Утренний зикр','Вечерний зикр'] },
+  { cat:'Интеллект', color:'var(--intel)', bg:'var(--intel-bg)', icon:'🧠', list:['Deep Work — математика','Английский (45 мин)','Чтение (15–20 стр.)','Без отвлечений'] },
+  { cat:'Тело', color:'var(--bodyc)', bg:'var(--body-bg)', icon:'💪', list:['Тренировка','8–10 тыс. шагов','Белок 140–160 г','Без сахара и мучного','Вода 2.5–3.5 л'] },
+  { cat:'Восстановление', color:'var(--rec)', bg:'var(--rec-bg)', icon:'🌙', list:['Сон 7–8 часов','Отбой до 23:00','Без телефона до сна'] }
+];
+
+const PRAYERS = [
+  {name:'Фаджр', time:'≈ 02:30'}, {name:'Зухр', time:'≈ 13:00'}, {name:'Аср', time:'≈ 16:30'},
+  {name:'Магриб', time:'≈ закат'}, {name:'Иша', time:'≈ 20:30–21:30'}
+];
+
+const STORAGE_KEY = 'discipline_dashboard_v1';
+let state = { goalsMonthly:{}, goalsWeekly:{}, habits:{}, prayers:{}, body:{}, sleep:{}, reflection:{} };
+let saveTimer = null;
+
+function todayKey(){
+  const d = new Date();
+  return d.toISOString().slice(0,10);
+}
+
+function loadState(){
+  const statusEl = document.getElementById('status-line');
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      state = Object.assign(state, parsed);
+    }
+  }catch(e){}
+  statusEl.innerText = '';
+  renderAll();
+}
+
+function saveState(){
+  const statusEl = document.getElementById('status-line');
+  statusEl.innerText = 'Сохранение...';
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      statusEl.innerText = 'Сохранено';
+      setTimeout(()=>{statusEl.innerText='';}, 1000);
+    }catch(e){ statusEl.innerText = 'Ошибка сохранения'; }
+  }, 300);
+}
+
+function renderAll(){
+  renderGoals();
+  renderTracker();
+  renderPrayers();
+  renderBodyTracker();
+  renderSleepTracker();
+  renderReflection();
+}
+
+/* GOALS */
+function renderGoals(){
+  const mEl = document.getElementById('goals-monthly');
+  const wEl = document.getElementById('goals-weekly');
+  mEl.innerHTML = GOALS_MONTHLY.map((g,i)=>goalItemHtml(g,i,'goalsMonthly')).join('');
+  wEl.innerHTML = GOALS_WEEKLY.map((g,i)=>goalItemHtml(g,i,'goalsWeekly')).join('');
+}
+function goalItemHtml(text,idx,group){
+  const checked = state[group][idx];
+  return `<li class="goal-item ${checked?'done':''}">
+    <div class="gchk ${checked?'checked':''}" onclick="toggleGoal('${group}',${idx})"><span class="ck">✓</span></div>
+    <span>${text}</span></li>`;
+}
+function toggleGoal(group, idx){
+  state[group][idx] = !state[group][idx];
+  if(!state[group][idx]) delete state[group][idx];
+  renderGoals(); saveState();
+}
+
+/* HABIT TRACKER */
+function renderTracker(){
+  let html='';
+  DATA_MAP.forEach((group,gIdx)=>{
+    html += `<tr class="cat-row-header" style="background:${group.bg};color:${group.color};"><td colspan="8"><span>${group.icon}</span> ${group.cat}</td></tr>`;
+    group.list.forEach((item,itemIdx)=>{
+      html += `<tr class="habit-row"><td class="habit-name">${item}</td>`;
+      for(let day=0; day<7; day++){
+        const key = `${gIdx}-${itemIdx}-${day}`;
+        const checked = state.habits[key];
+        html += `<td class="chk-cell"><div class="chk-btn ${checked?'checked':''}" onclick="toggleHabit('${key}')" style="${checked?'background:'+group.color+';':''}"><span class="ck">✓</span></div></td>`;
+      }
+      html += `</tr>`;
+    });
+  });
+  document.getElementById('tracker-body').innerHTML = html;
+  calcProgress();
+}
+function toggleHabit(key){
+  state.habits[key] = !state.habits[key];
+  if(!state.habits[key]) delete state.habits[key];
+  renderTracker(); saveState();
+}
+
+/* UNIFIED PROGRESS: counts habits table + prayers + body workout + sleep quality together */
+function calcProgress(){
+  let catChecked = {'Духовность':0,'Интеллект':0,'Тело':0,'Восстановление':0};
+  let catPossible = {'Духовность':0,'Интеллект':0,'Тело':0,'Восстановление':0};
+
+  // main habit table
+  DATA_MAP.forEach((group,gIdx)=>{
+    catPossible[group.cat] += group.list.length*7;
+    group.list.forEach((_,itemIdx)=>{
+      for(let day=0; day<7; day++){
+        if(state.habits[`${gIdx}-${itemIdx}-${day}`]) catChecked[group.cat]++;
+      }
+    });
+  });
+
+  // prayers -> Духовность (namaz + quran, 2 per prayer per day)
+  PRAYERS.forEach((p,pIdx)=>{
+    for(let day=0; day<7; day++){
+      catPossible['Духовность'] += 2;
+      if(state.prayers[`${pIdx}-${day}-namaz`]) catChecked['Духовность']++;
+      if(state.prayers[`${pIdx}-${day}-quran`]) catChecked['Духовность']++;
+    }
+  });
+
+  // body workout checkbox -> Тело
+  for(let day=0; day<7; day++){
+    catPossible['Тело'] += 1;
+    if(state.body[`workout-${day}`]) catChecked['Тело']++;
+  }
+
+  // sleep quality filled -> Восстановление
+  for(let day=0; day<7; day++){
+    catPossible['Восстановление'] += 1;
+    if(state.sleep[`qual-${day}`]) catChecked['Восстановление']++;
+  }
+
+  document.getElementById('score-spirit').innerText = `${catChecked['Духовность']}/${catPossible['Духовность']}`;
+  document.getElementById('score-intellect').innerText = `${catChecked['Интеллект']}/${catPossible['Интеллект']}`;
+  document.getElementById('score-body').innerText = `${catChecked['Тело']}/${catPossible['Тело']}`;
+  document.getElementById('score-recovery').innerText = `${catChecked['Восстановление']}/${catPossible['Восстановление']}`;
+
+  const totalChecked = Object.values(catChecked).reduce((a,b)=>a+b,0);
+  const totalPossible = Object.values(catPossible).reduce((a,b)=>a+b,0);
+  const pct = totalPossible>0 ? Math.round((totalChecked/totalPossible)*100) : 0;
+  document.getElementById('total-pct').innerText = pct+'%';
+  document.getElementById('total-circle').style.strokeDashoffset = 301.6 - (pct/100)*301.6;
+}
+
+/* PRAYER TRACKER */
+function renderPrayers(){
+  let html='';
+  PRAYERS.forEach((p,pIdx)=>{
+    let sum=0;
+    let cells='';
+    for(let day=0; day<7; day++){
+      const namazKey = `${pIdx}-${day}-namaz`;
+      const quranKey = `${pIdx}-${day}-quran`;
+      const namazC = state.prayers[namazKey];
+      const quranC = state.prayers[quranKey];
+      if(namazC && quranC) sum++;
+      cells += `<td class="chk-cell" style="border:none;width:46px;padding:4px 2px;">
+        <div style="display:flex;flex-direction:row;align-items:center;justify-content:center;gap:4px;">
+          <div class="chk-btn ${namazC?'checked':''}" onclick="togglePrayer('${namazKey}')" style="${namazC?'background:var(--spirit);':''}width:16px;height:16px;flex-shrink:0;"><span class="ck">✓</span></div>
+          <div class="chk-btn ${quranC?'checked':''}" onclick="togglePrayer('${quranKey}')" style="${quranC?'background:var(--intel);':''}width:16px;height:16px;flex-shrink:0;"><span class="ck">📖</span></div>
+        </div>
+      </td>`;
+    }
+    html += `<tr class="habit-row"><td><div class="rowname">🕌 ${p.name}<span class="time">${p.time}</span></div></td>${cells}<td class="avg-col" style="text-align:center;">${sum}/7</td></tr>`;
+  });
+  document.getElementById('prayer-body').innerHTML = html;
+}
+function togglePrayer(key){
+  state.prayers[key] = !state.prayers[key];
+  if(!state.prayers[key]) delete state.prayers[key];
+  renderPrayers(); calcProgress(); saveState();
+}
+
+/* BODY TRACKER */
+const BODY_FIELDS = [
+  {key:'workout', label:'Тренировка', icon:'🏋️', type:'check'},
+  {key:'steps', label:'Шаги (тыс.)', icon:'👣', type:'number'},
+  {key:'weight', label:'Вес (кг)', icon:'⚖️', type:'number'},
+  {key:'protein', label:'Белок (г)', icon:'🍗', type:'number'},
+  {key:'water', label:'Вода (л)', icon:'💧', type:'number'}
+];
+function renderBodyTracker(){
+  let html='';
+  BODY_FIELDS.forEach(f=>{
+    let cells='', vals=[];
+    for(let day=0; day<7; day++){
+      const key = `${f.key}-${day}`;
+      const val = state.body[key];
+      if(f.type==='check'){
+        cells += `<td class="chk-cell"><div class="chk-btn ${val?'checked':''}" onclick="toggleBody('${key}')" style="${val?'background:var(--bodyc);':''}"><span class="ck">✓</span></div></td>`;
+      } else {
+        if(val!==undefined && val!=='') vals.push(parseFloat(val));
+        cells += `<td class="chk-cell"><input class="num-input" type="number" step="0.1" value="${val!==undefined?val:''}" placeholder="—" onchange="setBodyVal('${key}',this.value)"></td>`;
+      }
+    }
+    let avg = '—';
+    if(f.type==='number' && vals.length){ avg = (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1); }
+    if(f.type==='check'){
+      let cnt=0; for(let day=0; day<7; day++){ if(state.body[`${f.key}-${day}`]) cnt++; }
+      avg = cnt+'/7';
+    }
+    html += `<tr class="habit-row"><td><div class="rowname">${f.icon} ${f.label}</div></td>${cells}<td class="avg-col" style="text-align:center;">${avg}</td></tr>`;
+  });
+  document.getElementById('body-tracker-body').innerHTML = html;
+}
+function toggleBody(key){
+  state.body[key] = !state.body[key];
+  if(!state.body[key]) delete state.body[key];
+  renderBodyTracker(); calcProgress(); saveState();
+}
+function setBodyVal(key,val){
+  if(val===''){ delete state.body[key]; } else { state.body[key]=val; }
+  renderBodyTracker(); saveState();
+}
+
+/* SLEEP TRACKER */
+function renderSleepTracker(){
+  let bedCells='', wakeCells='', hoursCells='', qualCells='';
+  let hoursVals=[], qualVals=[];
+  for(let day=0; day<7; day++){
+    const bed = state.sleep[`bed-${day}`] || '';
+    const wake = state.sleep[`wake-${day}`] || '';
+    const hours = state.sleep[`hours-${day}`];
+    const qual = state.sleep[`qual-${day}`];
+    bedCells += `<td class="chk-cell"><input class="txt-input" type="time" value="${bed}" onchange="setSleepVal('bed-${day}',this.value)"></td>`;
+    wakeCells += `<td class="chk-cell"><input class="txt-input" type="time" value="${wake}" onchange="setSleepVal('wake-${day}',this.value)"></td>`;
+    hoursCells += `<td class="chk-cell"><input class="num-input" type="number" step="0.5" value="${hours!==undefined?hours:''}" placeholder="—" onchange="setSleepVal('hours-${day}',this.value)"></td>`;
+    if(hours!==undefined && hours!=='') hoursVals.push(parseFloat(hours));
+    let stars='';
+    for(let s=1; s<=5; s++){
+      const filled = qual && s<=qual;
+      stars += `<span onclick="setSleepVal('qual-${day}','${s}')" style="cursor:pointer;color:${filled?'var(--rec)':'#d3cfc2'};font-size:11px;">★</span>`;
+    }
+    if(qual) qualVals.push(parseFloat(qual));
+    qualCells += `<td class="chk-cell">${stars}</td>`;
+  }
+  const hoursAvg = hoursVals.length ? (hoursVals.reduce((a,b)=>a+b,0)/hoursVals.length).toFixed(1) : '—';
+  const qualAvg = qualVals.length ? (qualVals.reduce((a,b)=>a+b,0)/qualVals.length).toFixed(1) : '—';
+  const html = `
+    <tr class="habit-row"><td><div class="rowname">🌙 Время отбоя</div></td>${bedCells}<td class="avg-col" style="text-align:center;">—</td></tr>
+    <tr class="habit-row"><td><div class="rowname">☀️ Время подъёма</div></td>${wakeCells}<td class="avg-col" style="text-align:center;">—</td></tr>
+    <tr class="habit-row"><td><div class="rowname">⏱️ Сон (часы)<span class="time">Цель: 7–8 часов</span></div></td>${hoursCells}<td class="avg-col" style="text-align:center;">${hoursAvg}</td></tr>
+    <tr class="habit-row"><td><div class="rowname">⭐ Качество сна</div></td>${qualCells}<td class="avg-col" style="text-align:center;">${qualAvg}</td></tr>
+  `;
+  document.getElementById('sleep-body').innerHTML = html;
+}
+function setSleepVal(key,val){
+  if(val===''){ delete state.sleep[key]; } else { state.sleep[key]=val; }
+  calcProgress();
+  renderSleepTracker(); saveState();
+}
+
+/* REFLECTION (per-day, keyed by today's date) */
+function renderReflection(){
+  const key = todayKey();
+  document.getElementById('refl-date').innerText = key;
+  const entry = state.reflection[key] || {};
+  document.getElementById('refl-spirit').value = entry.spirit || '';
+  document.getElementById('refl-intellect').value = entry.intellect || '';
+  document.getElementById('refl-body').value = entry.body || '';
+  document.getElementById('refl-recovery').value = entry.recovery || '';
+  document.getElementById('refl-best').value = entry.best || '';
+  document.getElementById('refl-improve').value = entry.improve || '';
+  document.getElementById('refl-task').value = entry.task || '';
+  document.getElementById('refl-grateful').value = entry.grateful || '';
+  updateReflTotal();
+
+  ['spirit','intellect','body','recovery','best','improve','task','grateful'].forEach(field=>{
+    document.getElementById('refl-'+field).oninput = ()=>saveReflection();
+  });
+}
+function updateReflTotal(){
+  const s = parseFloat(document.getElementById('refl-spirit').value)||0;
+  const i = parseFloat(document.getElementById('refl-intellect').value)||0;
+  const b = parseFloat(document.getElementById('refl-body').value)||0;
+  const r = parseFloat(document.getElementById('refl-recovery').value)||0;
+  document.getElementById('refl-total').innerText = (s+i+b+r);
+}
+function saveReflection(){
+  const key = todayKey();
+  state.reflection[key] = {
+    spirit: document.getElementById('refl-spirit').value,
+    intellect: document.getElementById('refl-intellect').value,
+    body: document.getElementById('refl-body').value,
+    recovery: document.getElementById('refl-recovery').value,
+    best: document.getElementById('refl-best').value,
+    improve: document.getElementById('refl-improve').value,
+    task: document.getElementById('refl-task').value,
+    grateful: document.getElementById('refl-grateful').value
+  };
+  updateReflTotal();
+  saveState();
+}
+
+loadState();
+</script>
+</body>
+</html>
